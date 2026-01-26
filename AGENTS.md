@@ -22,6 +22,18 @@ Think systemically using SHORT-form KEYWORDS for efficient internal reasoning. U
 **NO SELF-CALCULATION [MANDATORY]:** LLMs cannot reliably calculate. ALWAYS use `fend` for ANY arithmetic, conversion, or logic. NEVER attempt mental math.
 </deep_reasoning>
 
+<verbalized_sampling>
+**Automatic VS [MANDATORY - ALWAYS ON]:** Before ANY action, sample diverse intent hypotheses.
+
+**Protocol:** Sample (p<0.10 each) → Assess (Weakness/Contradiction/Oversight) → Explore (edge cases until diminishing returns)
+
+**Adaptive Count:** 3 (trivial: <50 LOC, single file) | 5 (medium) | 7-10 (complex/architectural)
+
+**Format:** `<text>hypothesis</text> <probability>0.XX</probability>` + per-sample critique
+
+**Rules:** Always visible | No exemptions (including Fast agent) | Gates all action
+</verbalized_sampling>
+
 <investigate_before_answering>
 **Mandatory file reading:** If user references a file, READ it before answering. Never speculate about unread code. Investigate relevant files BEFORE answering to prevent hallucinations. Always provide grounded, hallucination-free answers rooted in actual file contents. If uncertain, acknowledge and propose investigating specific files/directories.
 </investigate_before_answering>
@@ -43,6 +55,76 @@ Think systemically using SHORT-form KEYWORDS for efficient internal reasoning. U
 
 **FORBIDDEN:** Guessing parameters requiring other results; Ignoring logical order; Batching dependent operations
 </orchestration>
+
+<proactive_delegation>
+**DELEGATION IS DEFAULT. Single-agent execution requires justification.**
+
+**Auto-Skip Conditions (direct execution allowed):**
+- Single file, <50 LOC change
+- Trivial task (typo fix, config tweak, single-line edit)
+- User explicitly requests direct execution
+
+**Mandatory Delegation Triggers:**
+- Task mentions 2+ distinct concerns
+- Task spans 2+ directories/modules
+- Task requires research + implementation
+- Task involves 3+ files
+- Confidence < 0.7 on any subtask
+
+**Adaptive Agent Counts:**
+| Complexity Signal | Min Agents | Strategy |
+|-------------------|------------|----------|
+| Single concern, known pattern | 1 | Direct or 1 Explore |
+| Multiple concerns OR unknown codebase | 2 | Explore + Plan |
+| Cross-module OR >5 files | 3 | 2 Explore (parallel) + Plan |
+| Architectural change OR refactor | 3-5 | Parallel domain exploration |
+
+**Launch Protocol:**
+1. Before reasoning about implementation → spawn Explore agents
+2. Independent subtasks → parallel agents in ONE tool call
+3. Never sequential when parallel possible
+</proactive_delegation>
+
+<delegation_enforcement>
+**Inversion Principle:** Justify NOT delegating, never justify delegating.
+
+**Self-Check (every response):**
+- Can any part run in parallel? → Spawn parallel agents
+- About to research/explore? → Spawn Explore agent
+- About to plan implementation? → Spawn Plan agent
+- Non-trivial task? → Minimum 1 agent
+
+**Anti-Patterns (FORBIDDEN):**
+- Reasoning >1 paragraph before launching agents
+- Sequential agent launches when parallel possible
+- "Let me first understand X" without Explore agent
+- Researching yourself when Explore agent could
+- >50 LOC without Plan agent first
+- Agents spawning sub-agents (depth limit: 1)
+
+**Parallel Syntax (MANDATORY):**
+All independent agents in ONE message with multiple Task calls.
+</delegation_enforcement>
+
+<task_launch_multiple_agents>
+**Multi-Agent Tasks Launch Orchestration (Workspace Isolation)**
+**Rule:** Parallel agents MUST execute in isolated workspaces to prevent lock contention.
+**Constraint:** Use `git clone --shared` for physical isolation (avoid `git worktree`).
+
+**Launch Protocol:**
+1.  **Analyze:** Identify base revision (e.g., `origin/main`).
+2.  **Isolate:** Create ephemeral clones for EACH agent to ensure physical separation.
+    *   `git clone --shared . ./.outline/agent-<id>`
+3.  **Execute:** Agents run inside `./.outline/agent-<id>` in detached HEAD.
+    *   `cd ./.outline/agent-<id> && git checkout --detach <base>`
+    *   _Agent A:_ `git commit -m "task A"` (auto-tracked as draft by branchless)
+    *   _Agent B:_ `git commit -m "task B"` (auto-tracked as draft by branchless)
+4.  **Converge:**
+    *   Publish from agent clone: `git push origin HEAD:refs/heads/agent-<id>`
+    *   In main workspace: `git fetch origin` → `git branchless sync`
+    *   Visualize/Verify: `git branchless smartlog`
+5.  **Cleanup:** `rm -rf ./.outline/agent-<id>`
+</task_launch_multiple_agents>
 
 <confidence_driven_execution>
 Calculate confidence: `Confidence = (familiarity + (1-complexity) + (1-risk) + (1-scope)) / 4`
