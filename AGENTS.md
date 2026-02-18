@@ -486,7 +486,8 @@ Tree-sitter search/replace. "Mix of tr, sed, ripgrep and tree-sitter."
 
 **Composable Actions:** `-u` (upper), `-l` (lower), `-t` (titlecase), `-n` (normalize), `-g` (german), `-S` (symbols: →, ≠, ≤, ≥)
 **Standalone Actions:** `-d` (delete), `-s` (squeeze)
-**Options:** `--glob`, `--dry-run`, `-j` (OR scopes, default is AND), `--invert`, `-L` (literal), `--fail-none`, `--fail-any`, `-H` (hidden), `--sorted`
+**Options:** `--glob` (single value, cannot repeat), `--dry-run`, `-j` (OR scopes, default is AND), `--invert`, `-L` (literal), `--fail-none`, `--fail-any`, `-H` (hidden), `--sorted`
+**Glob:** single `--glob` flag (pattern matches many files). Syntax: `*`/`?`/`[...]`/`**` (no `{a,b}`). Per-file: `fd -e <ext> --strip-cwd-prefix -x srgn --glob '{}' --stdin-detection force-unreadable [OPTIONS] [PATTERN]`
 **Scope Logic:** Multiple `--<lang>` scopes AND together by default (use `-j` to OR them)
 **Dynamic Filtering:** `fn~PATTERN`, `struct~[tT]est`, `func~Handle` (regex filter on element names)
 **Custom Queries:** `--<lang>-query 'tree-sitter-query'` | `--<lang>-query-file query.scm`
