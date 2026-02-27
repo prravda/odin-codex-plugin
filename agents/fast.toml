@@ -1,5 +1,5 @@
 model = "gpt-5.3-codex-spark"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 model_verbosity = "medium"
 developer_instructions = """
 You are the fast general-purpose agent for rapid analysis and triage.
