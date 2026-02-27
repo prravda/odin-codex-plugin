@@ -1,19 +1,66 @@
 model_reasoning_effort = "high"
-model_verbosity = "low"
-model_reasoning_summary = "detailed"
-show_raw_agent_reasoning = true
+model_verbosity = "high"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
-project_doc_max_bytes = 65536
-project_doc_fallback_filenames = ["CLAUDE.md", "README.md"]
-# network_access = true
-# By default, only the cwd for the Codex session will be writable (and $TMPDIR on macOS),
-# but you can specify additional writable folders in this array.
-# # Replace built‑in instructions
-# # `USER` must be manually replaced with the actual username
-# experimental_instructions_file = "/home/USER/.codex/base_instruction.override.md"
-# experimental_compact_prompt_file = "/home/USER/.codex/compact_instruction.override.md"
-model = "gpt-5.2-codex"
+project_doc_fallback_filenames = ["CLAUDE.md"]
+model = "gpt-5.3-codex"
+personality = "pragmatic"
+suppress_unstable_features_warning = true
+
+[agents]
+# max_depth = 4
+# max_threads = 128
+
+max_depth = 2
+max_threads = 24
+
+[agents.plan]
+description = "Architecture and implementation planner. USE FOR: execution plans, dependency sequencing, risk and rollback strategy. NOT FOR: direct code edits or fast lookups. Produces actionable, file-scoped steps and verification guidance."
+config_file = "agents/plan.toml"
+
+[agents.explorer]
+config_file = "agents/explore.toml"
+
+[agents.librarian]
+description = "External research specialist. USE FOR: library patterns, upstream APIs, and version-specific behavior analysis. NOT FOR: local code edits. Provides sourced references and applicability notes for implementation."
+config_file = "agents/librarian.toml"
+
+[agents.code-fast]
+description = "Rapid code authoring agent. USE FOR: scaffolding, boilerplate, and quick feature implementation. NOT FOR: debugging or analysis (use fast) or hardening passes."
+config_file = "agents/code-fast.toml"
+
+[agents.code]
+description = "Default code authoring agent. USE FOR: writing new features, implementing changes, production-oriented code. NOT FOR: debugging analysis (use general) or adversarial review."
+config_file = "agents/code.toml"
+
+[agents.code-deep]
+description = "High-fidelity code authoring agent. USE FOR: complex critical-path implementations requiring exhaustive correctness. NOT FOR: reasoning-only analysis (use deep) or quick prototypes."
+config_file = "agents/code-deep.toml"
+
+[agents.fast]
+description = "Fast general-purpose agent for quick analysis and fixes. USE FOR: rapid debugging, triage, small mixed-concern patches. NOT FOR: dedicated feature implementation (use code-fast) or deep reasoning."
+config_file = "agents/fast.toml"
+
+[agents.awaiter]
+config_file = "agents/awaiter.toml"
+
+[agents.default]
+config_file = "agents/general.toml"
+
+[agents.worker]
+config_file = "agents/general.toml"
+
+[agents.deep]
+description = "Deep reasoning agent for complex analysis. USE FOR: multi-file debugging, intricate refactoring logic, high-risk technical decisions. NOT FOR: straightforward code authoring (use code-deep) or trivial edits."
+config_file = "agents/deep.toml"
+
+[agents.reviewer]
+description = "Code review specialist. USE FOR: security, correctness, regression, and testing risk review. NOT FOR: implementation unless asked. Returns severity-ranked findings with concrete remediation guidance."
+config_file = "agents/reviewer.toml"
+
+[agents.advocate]
+description = "Adversarial reasoning specialist. USE FOR: pre-mortems, assumption audits, and stress-testing plans. NOT FOR: low-risk routine edits. Challenges proposals and provides concrete mitigations with trade-offs."
+config_file = "agents/advocate.toml"
 
 [analytics]
 enabled = false
@@ -21,12 +68,13 @@ enabled = false
 [features]
 undo = true
 apply_patch_freeform = true
-web_search_request = true  # allow the model to request web searches
-# view_image_tool defaults to true; omit to keep defaults
 steer = true
-enable_request_compression = true
-collab = true
+multi_agent = true
 collaboration_modes = true
+personality = true
+memories = true
+child_agents_md = true
+js_repl = true
 
 [sandbox_workspace_write]
 network_access = true
@@ -37,20 +85,22 @@ writable_roots = ["/tmp"]
 # Defaults to false.
 notifications = true
 animations = false
+status_line = [
+  "model-with-reasoning",
+  "git-branch",
+  "context-remaining",
+  "context-used",
+  "five-hour-limit",
+  "weekly-limit",
+  "used-tokens"
+]
 
-[notice]
-hide_full_access_warning = true
-hide_rate_limit_model_nudge = true
-
-[mcp_servers.github-grep]
-url = "https://mcp.grep.app"
-
-[mcp_servers.ripgrep]
-command = "npx"
-args = ["-y", "mcp-ripgrep@latest"]
-
+# [Start] MCP Servers
 [mcp_servers.context7]
 url = "https://mcp.context7.com/mcp"
+
+[mcp_servers.context7.http_headers]
+CONTEXT7_API_KEY = "ctx7sk-7d9ad015-a1c2-43a0-b671-d1870dc68561"
 
 [mcp_servers.sequentialthinking-tools]
 command = "npx"
@@ -71,4 +121,7 @@ args = ["mcp-server-time"]
 [mcp_servers.repomix]
 command = "npx"
 args = ["-y", "repomix", "--mcp"]
+
+[notice]
+hide_rate_limit_model_nudge = true
 # [End] MCP Servers

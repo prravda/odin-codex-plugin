@@ -59,6 +59,7 @@ CRITICAL: Design proofs BEFORE implementation.
 ## Conditional Strategy
 
 **If NO existing Lean artifacts:**
+
 ```bash
 # Check for existing proofs
 fd -e lean PATH
@@ -66,21 +67,23 @@ fd lakefile.lean PATH
 ```
 
 Design complete proof suite:
+
 - Create theorem statements for all properties
 - Plan lemma hierarchy
 - Design proof structure in `.outline/proofs/lean/`
 
 **If existing Lean artifacts found:**
+
 - Analyze current proof coverage
 - Identify `sorry` placeholders to complete
 - Design additional theorems for new requirements
 
 ## Map Proofs to Implementation
 
-| Theorem | Implementation Target | Validation |
-|---------|----------------------|------------|
-| `thm_1` | `function_a()` | Property X |
-| `thm_2` | `function_b()` | Invariant Y |
+| Theorem | Implementation Target | Validation  |
+| ------- | --------------------- | ----------- |
+| `thm_1` | `function_a()`        | Property X  |
+| `thm_2` | `function_b()`        | Invariant Y |
 
 ---
 
@@ -107,6 +110,7 @@ test -f lakefile.lean || lake new ProjectProofs
 ```
 
 **Create Theorem Files:**
+
 ```lean
 -- .outline/proofs/lean/ProjectProofs/Basic.lean
 
@@ -148,6 +152,7 @@ echo "Sorry count: $SORRY_COUNT"
 ### Step 3: REMEDIATE Until Complete
 
 **Replace each `sorry` with actual proof:**
+
 ```lean
 -- Before (placeholder)
 theorem withdraw_preserves_balance
@@ -165,6 +170,7 @@ theorem withdraw_preserves_balance
 ```
 
 **Iterate until zero sorry:**
+
 ```bash
 while [ "$SORRY_COUNT" -gt 0 ]; do
   # Complete proofs using tactics
@@ -176,41 +182,41 @@ done
 
 ## Common Tactics Reference
 
-| Tactic | Use Case |
-|--------|----------|
-| `simp` | Simplify with known lemmas |
-| `omega` | Linear arithmetic |
-| `aesop` | Automated proof search |
-| `rw [h]` | Rewrite using hypothesis |
-| `exact h` | Provide exact term |
-| `intro h` | Introduce hypothesis |
-| `cases h` | Case split |
-| `induction n` | Inductive proof |
-| `constructor` | Build inductive type |
-| `rfl` | Definitional equality |
+| Tactic        | Use Case                   |
+| ------------- | -------------------------- |
+| `simp`        | Simplify with known lemmas |
+| `omega`       | Linear arithmetic          |
+| `aesop`       | Automated proof search     |
+| `rw [h]`      | Rewrite using hypothesis   |
+| `exact h`     | Provide exact term         |
+| `intro h`     | Introduce hypothesis       |
+| `cases h`     | Case split                 |
+| `induction n` | Inductive proof            |
+| `constructor` | Build inductive type       |
+| `rfl`         | Definitional equality      |
 
 ---
 
 # VALIDATION GATES
 
-| Gate | Command | Pass Criteria | Blocking |
-|------|---------|---------------|----------|
-| Toolchain | `command -v lake` | Found | Yes |
-| Build | `lake build` | Success | Yes |
-| Sorry Count | `rg '\bsorry\b'` | Zero | Yes |
-| Tests | `lake test` | All pass | If present |
+| Gate        | Command           | Pass Criteria | Blocking   |
+| ----------- | ----------------- | ------------- | ---------- |
+| Toolchain   | `command -v lake` | Found         | Yes        |
+| Build       | `lake build`      | Success       | Yes        |
+| Sorry Count | `rg '\bsorry\b'`  | Zero          | Yes        |
+| Tests       | `lake test`       | All pass      | If present |
 
 ---
 
 # EXIT CODES
 
-| Code | Meaning |
-|------|---------|
-| 0 | All proofs verified, zero sorry |
-| 11 | lean/lake not found |
-| 12 | No .lean files created |
-| 13 | Build failed or proofs incomplete |
-| 14 | Coverage gaps (theorems missing) |
+| Code | Meaning                           |
+| ---- | --------------------------------- |
+| 0    | All proofs verified, zero sorry   |
+| 11   | lean/lake not found               |
+| 12   | No .lean files created            |
+| 13   | Build failed or proofs incomplete |
+| 14   | Coverage gaps (theorems missing)  |
 
 ---
 
@@ -242,7 +248,5 @@ done
    - Main theorems proved
    - Supporting lemmas
    - Tactics used
-
-
 
 $ARGUMENTS

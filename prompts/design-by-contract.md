@@ -18,15 +18,15 @@ Plan preconditions, postconditions, and invariants FROM REQUIREMENTS before any 
 Static Assertions (compile-time) > Test/Debug Contracts > Runtime Contracts
 ```
 
-| Property | Static | Test Contract | Debug Contract | Runtime Contract |
-|----------|--------|---------------|----------------|------------------|
-| Type size/alignment | `static_assert`, `assert_eq_size!` | - | - | - |
-| Null/type safety | Type checker (tsc/pyright) | - | - | - |
-| Exhaustiveness | Pattern matching + `never` | - | - | - |
-| Expensive O(n)+ checks | - | `test_ensures` | - | - |
-| Internal state invariants | - | - | `debug_invariant` | - |
-| Public API input validation | - | - | - | `requires` |
-| External/untrusted data | - | - | - | Required (Zod/deal) |
+| Property                    | Static                             | Test Contract  | Debug Contract    | Runtime Contract    |
+| --------------------------- | ---------------------------------- | -------------- | ----------------- | ------------------- |
+| Type size/alignment         | `static_assert`, `assert_eq_size!` | -              | -                 | -                   |
+| Null/type safety            | Type checker (tsc/pyright)         | -              | -                 | -                   |
+| Exhaustiveness              | Pattern matching + `never`         | -              | -                 | -                   |
+| Expensive O(n)+ checks      | -                                  | `test_ensures` | -                 | -                   |
+| Internal state invariants   | -                                  | -              | `debug_invariant` | -                   |
+| Public API input validation | -                                  | -              | -                 | `requires`          |
+| External/untrusted data     | -                                  | -              | -                 | Required (Zod/deal) |
 
 ---
 
@@ -61,36 +61,42 @@ CRITICAL: Design contracts BEFORE implementation.
 
 ## Contract Library Selection
 
-| Language | Library | Annotation Style |
-|----------|---------|------------------|
-| Python | deal | `@deal.pre`, `@deal.post`, `@deal.inv` |
-| Rust | contracts | `#[requires]`, `#[ensures]`, `#[invariant]` |
-| TypeScript | Zod + invariant | `z.object().refine()`, `invariant()` |
-| Kotlin | Native | `require()`, `check()`, `contract {}` |
-| Java | Guava | `checkArgument()`, `checkState()` |
-| C# | Guard.Against | `Guard.Against.Null()`, `Contract.Requires` |
-| C++ | GSL | `Expects()`, `Ensures()` |
+| Language   | Library         | Annotation Style                            |
+| ---------- | --------------- | ------------------------------------------- |
+| Python     | deal            | `@deal.pre`, `@deal.post`, `@deal.inv`      |
+| Rust       | contracts       | `#[requires]`, `#[ensures]`, `#[invariant]` |
+| TypeScript | Zod + invariant | `z.object().refine()`, `invariant()`        |
+| Kotlin     | Native          | `require()`, `check()`, `contract {}`       |
+| Java       | Guava           | `checkArgument()`, `checkState()`           |
+| C#         | Guard.Against   | `Guard.Against.Null()`, `Contract.Requires` |
+| C++        | GSL             | `Expects()`, `Ensures()`                    |
 
 ## Contract Design Templates
 
 ### Python (deal)
+
 ```python
 # Contract design for: [Function]
 # From requirement: [REQ-ID]
 
+
 @deal.pre(lambda amount: amount > 0, message="PRE-1: Amount must be positive")
-@deal.pre(lambda self, amount: amount <= self.balance, message="PRE-2: Insufficient balance")
-@deal.ensure(lambda self, amount, result: self.balance == deal.old(self.balance) - amount)
-def withdraw(self, amount: int) -> int:
-    ...
+@deal.pre(
+    lambda self, amount: amount <= self.balance, message="PRE-2: Insufficient balance"
+)
+@deal.ensure(
+    lambda self, amount, result: self.balance == deal.old(self.balance) - amount
+)
+def withdraw(self, amount: int) -> int: ...
+
 
 # Class invariant
 @deal.inv(lambda self: self.balance >= 0)
-class Account:
-    ...
+class Account: ...
 ```
 
 ### TypeScript (Zod + invariant)
+
 ```typescript
 // Contract design for: [Function]
 // From requirement: [REQ-ID]
@@ -99,7 +105,7 @@ const WithdrawInput = z.object({
   amount: z.number().positive("PRE-1: Amount must be positive"),
 }).refine(
   (data) => data.amount <= this.balance,
-  "PRE-2: Insufficient balance"
+  "PRE-2: Insufficient balance",
 );
 
 function withdraw(amount: number): number {
@@ -115,6 +121,7 @@ function withdraw(amount: number): number {
 ```
 
 ### Rust (contracts crate)
+
 ```rust
 // Contract design for: [Function]
 // From requirement: [REQ-ID]
@@ -144,11 +151,13 @@ pub fn withdraw(&mut self, amount: u64) -> u64 {
 ### Step 1: CREATE Contract Annotations
 
 **Python (deal):**
+
 ```python
 # src/account.py
 # Contracts from plan design
 
 import deal
+
 
 @deal.inv(lambda self: self.balance >= 0)  # From plan INV-1
 class Account:
@@ -158,14 +167,16 @@ class Account:
     @deal.pre(lambda self, amount: amount > 0)  # From plan PRE-1
     @deal.pre(lambda self, amount: amount <= self.balance)  # From plan PRE-2
     @deal.ensure(lambda self, amount, result: result == amount)  # From plan POST-1
-    @deal.ensure(lambda self, amount, result:
-        self.balance == deal.old(self.balance) - amount)  # From plan POST-2
+    @deal.ensure(
+        lambda self, amount, result: self.balance == deal.old(self.balance) - amount
+    )  # From plan POST-2
     def withdraw(self, amount: int) -> int:
         self.balance -= amount
         return amount
 ```
 
 **Kotlin (Native):**
+
 ```kotlin
 // src/Account.kt
 // Contracts from plan design
@@ -220,6 +231,7 @@ java -ea -version
 import pytest
 import deal
 
+
 class TestContractViolations:
     """Verify contracts are enforced"""
 
@@ -253,26 +265,26 @@ class TestContractViolations:
 
 # VALIDATION GATES
 
-| Gate | Command | Pass Criteria | Blocking |
-|------|---------|---------------|----------|
-| Contracts Created | Grep for annotations | Found | Yes |
-| Enforcement Mode | Check debug/assertions | Enabled | Yes |
-| Lint | `deal lint` or equivalent | No warnings | Yes |
-| Violation Tests | Run contract tests | All pass | Yes |
+| Gate              | Command                   | Pass Criteria | Blocking |
+| ----------------- | ------------------------- | ------------- | -------- |
+| Contracts Created | Grep for annotations      | Found         | Yes      |
+| Enforcement Mode  | Check debug/assertions    | Enabled       | Yes      |
+| Lint              | `deal lint` or equivalent | No warnings   | Yes      |
+| Violation Tests   | Run contract tests        | All pass      | Yes      |
 
 ---
 
 # EXIT CODES
 
-| Code | Meaning |
-|------|---------|
-| 0 | All contracts enforced and tested |
-| 1 | Precondition violation in production code |
-| 2 | Postcondition violation in production code |
-| 3 | Invariant violation in production code |
-| 11 | Contract library not installed |
-| 13 | Runtime assertions disabled |
-| 14 | Contract lint failed |
+| Code | Meaning                                    |
+| ---- | ------------------------------------------ |
+| 0    | All contracts enforced and tested          |
+| 1    | Precondition violation in production code  |
+| 2    | Postcondition violation in production code |
+| 3    | Invariant violation in production code     |
+| 11   | Contract library not installed             |
+| 13   | Runtime assertions disabled                |
+| 14   | Contract lint failed                       |
 
 ---
 
@@ -305,7 +317,5 @@ class TestContractViolations:
    - PRE violations caught: Yes/No
    - POST violations caught: Yes/No
    - INV violations caught: Yes/No
-
-
 
 $ARGUMENTS

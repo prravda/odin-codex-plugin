@@ -14,11 +14,11 @@ Plan state machines, invariants, and temporal properties FROM REQUIREMENTS befor
 
 Before Quint modeling, encode compile-time verifiable properties in the type system:
 
-| Language | Tool | Command |
-|----------|------|---------|
-| Rust | `static_assertions` crate | `cargo check` |
-| TypeScript | `satisfies`, `as const` | `tsc --strict` |
-| Python | `assert_type`, `Final` | `pyright --strict` |
+| Language   | Tool                      | Command            |
+| ---------- | ------------------------- | ------------------ |
+| Rust       | `static_assertions` crate | `cargo check`      |
+| TypeScript | `satisfies`, `as const`   | `tsc --strict`     |
+| Python     | `assert_type`, `Final`    | `pyright --strict` |
 
 Quint handles state machines and temporal properties that types cannot express.
 
@@ -77,6 +77,7 @@ CRITICAL: Design specifications BEFORE implementation.
 ## Specification Design Templates
 
 ### Types Module
+
 ```quint
 // .outline/specs/types.qnt
 
@@ -96,6 +97,7 @@ module types {
 ```
 
 ### State Module
+
 ```quint
 // .outline/specs/state.qnt
 module state {
@@ -114,6 +116,7 @@ module state {
 ```
 
 ### Invariants Module
+
 ```quint
 // .outline/specs/invariants.qnt
 module invariants {
@@ -151,6 +154,7 @@ mkdir -p .outline/specs
 ```
 
 **Create Type Definitions:**
+
 ```quint
 // .outline/specs/types.qnt
 
@@ -170,6 +174,7 @@ module types {
 ```
 
 **Create Actions:**
+
 ```quint
 // .outline/specs/actions.qnt
 module actions {
@@ -194,6 +199,7 @@ module actions {
 ```
 
 **Create Main Module:**
+
 ```quint
 // .outline/specs/main.qnt
 module main {
@@ -259,25 +265,25 @@ def create(id: str, value: int) -> bool:
 
 # VALIDATION GATES
 
-| Gate | Command | Pass Criteria | Blocking |
-|------|---------|---------------|----------|
-| Quint | `command -v quint` | Found | Yes |
-| Typecheck | `quint typecheck` | No errors | Yes |
-| Invariants | `quint verify` | All hold | Yes |
-| Tests | `quint test` | All pass | If present |
+| Gate       | Command            | Pass Criteria | Blocking   |
+| ---------- | ------------------ | ------------- | ---------- |
+| Quint      | `command -v quint` | Found         | Yes        |
+| Typecheck  | `quint typecheck`  | No errors     | Yes        |
+| Invariants | `quint verify`     | All hold      | Yes        |
+| Tests      | `quint test`       | All pass      | If present |
 
 ---
 
 # EXIT CODES
 
-| Code | Meaning |
-|------|---------|
-| 0 | Specification verified, ready for implementation |
-| 11 | Quint not installed |
-| 12 | Syntax/type errors in specification |
-| 13 | Invariant violation detected |
-| 14 | Specification tests failed |
-| 15 | Implementation incomplete |
+| Code | Meaning                                          |
+| ---- | ------------------------------------------------ |
+| 0    | Specification verified, ready for implementation |
+| 11   | Quint not installed                              |
+| 12   | Syntax/type errors in specification              |
+| 13   | Invariant violation detected                     |
+| 14   | Specification tests failed                       |
+| 15   | Implementation incomplete                        |
 
 ---
 
@@ -311,7 +317,5 @@ def create(id: str, value: int) -> bool:
 3. **Implementation Mapping**
    - Spec action -> Target function
    - Spec invariant -> Runtime assertion
-
-
 
 $ARGUMENTS

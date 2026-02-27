@@ -60,6 +60,7 @@ CRITICAL: Design types BEFORE implementation.
 ## Type Design Templates
 
 ### Refined Types
+
 ```idris
 -- .outline/proofs/src/Constraints.idr
 
@@ -82,6 +83,7 @@ data Bounded : (lo : Nat) -> (hi : Nat) -> (n : Nat) -> Type where
 ```
 
 ### State-Indexed Types
+
 ```idris
 -- .outline/proofs/src/StateMachine.idr
 
@@ -130,6 +132,7 @@ pack new myproject
 ```
 
 **Create Type Definitions:**
+
 ```idris
 -- .outline/proofs/src/Types.idr
 module Types
@@ -146,6 +149,7 @@ data NonEmpty : List a -> Type where
 ```
 
 **Create Type-Safe Operations:**
+
 ```idris
 -- .outline/proofs/src/Operations.idr
 module Operations
@@ -195,34 +199,35 @@ echo "Remaining holes: $HOLE_COUNT"
 
 **Map Idris types to target language:**
 
-| Idris Type | TypeScript | Rust | Python |
-|------------|-----------|------|--------|
-| `Positive n` | Runtime check | `NonZeroU32` | Assert |
-| `NonEmpty xs` | `[T, ...T[]]` | `Vec1<T>` | Assert |
-| `Fin n` | Bounds check | `usize` bound | Assert |
-| `State index` | Discriminated union | Enum + phantom | Enum |
+| Idris Type    | TypeScript          | Rust           | Python |
+| ------------- | ------------------- | -------------- | ------ |
+| `Positive n`  | Runtime check       | `NonZeroU32`   | Assert |
+| `NonEmpty xs` | `[T, ...T[]]`       | `Vec1<T>`      | Assert |
+| `Fin n`       | Bounds check        | `usize` bound  | Assert |
+| `State index` | Discriminated union | Enum + phantom | Enum   |
 
 **TypeScript Implementation:**
+
 ```typescript
 // From Idris: Types encode in TypeScript
 
 // Positive: Runtime enforcement
 function safeDiv(x: number, y: number): number {
-  if (y <= 0) throw new Error('Positive violation: divisor must be positive');
+  if (y <= 0) throw new Error("Positive violation: divisor must be positive");
   return Math.floor(x / y);
 }
 
 // NonEmpty: Type-level enforcement
 function head<T>(xs: [T, ...T[]]): T {
-  return xs[0];  // Guaranteed non-empty by type
+  return xs[0]; // Guaranteed non-empty by type
 }
 
 // State machine: Discriminated unions
-type WorkflowState = 'initial' | 'processing' | 'complete' | 'failed';
+type WorkflowState = "initial" | "processing" | "complete" | "failed";
 type Workflow<S extends WorkflowState> = { state: S };
 
-function start(w: Workflow<'initial'>): Workflow<'processing'> {
-  return { state: 'processing' };
+function start(w: Workflow<"initial">): Workflow<"processing"> {
+  return { state: "processing" };
 }
 ```
 
@@ -230,27 +235,27 @@ function start(w: Workflow<'initial'>): Workflow<'processing'> {
 
 # VALIDATION GATES
 
-| Gate | Command | Pass Criteria | Blocking |
-|------|---------|---------------|----------|
-| Idris 2 | `command -v idris2` | Found | Yes |
-| Type Check | `idris2 --check` | No errors | Yes |
-| Totality | `idris2 --total` | All total | Yes |
-| Holes | `rg '\?'` | Zero | Yes |
-| Target Build | `tsc` / `cargo build` | Success | Yes |
-| Property Tests | Test suite | All pass | Yes |
+| Gate           | Command               | Pass Criteria | Blocking |
+| -------------- | --------------------- | ------------- | -------- |
+| Idris 2        | `command -v idris2`   | Found         | Yes      |
+| Type Check     | `idris2 --check`      | No errors     | Yes      |
+| Totality       | `idris2 --total`      | All total     | Yes      |
+| Holes          | `rg '\?'`             | Zero          | Yes      |
+| Target Build   | `tsc` / `cargo build` | Success       | Yes      |
+| Property Tests | Test suite            | All pass      | Yes      |
 
 ---
 
 # EXIT CODES
 
-| Code | Meaning |
-|------|---------|
-| 0 | Types verified, implementation complete |
-| 11 | Idris 2 not installed |
-| 12 | No .idr files created |
-| 13 | Type check or totality failed |
-| 14 | Holes remaining |
-| 15 | Target implementation failed |
+| Code | Meaning                                 |
+| ---- | --------------------------------------- |
+| 0    | Types verified, implementation complete |
+| 11   | Idris 2 not installed                   |
+| 12   | No .idr files created                   |
+| 13   | Type check or totality failed           |
+| 14   | Holes remaining                         |
+| 15   | Target implementation failed            |
 
 ---
 
@@ -281,7 +286,5 @@ function start(w: Workflow<'initial'>): Workflow<'processing'> {
 3. **Target Implementation**
    - Type correspondence table
    - Property tests from types
-
-
 
 $ARGUMENTS

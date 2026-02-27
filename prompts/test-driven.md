@@ -47,28 +47,29 @@ CRITICAL: Design tests BEFORE implementation.
 
 2. **Design Test Cases**
 
-   | Test Name | Type | Input | Expected | Requirement |
-   |-----------|------|-------|----------|-------------|
-   | `test_err_1` | Error | Invalid | Exception | REQ-1 |
-   | `test_edge_1` | Edge | Boundary | Handled | REQ-2 |
-   | `test_happy_1` | Happy | Normal | Success | REQ-3 |
-   | `prop_inv_1` | Property | Generated | Invariant | REQ-4 |
+   | Test Name      | Type     | Input     | Expected  | Requirement |
+   | -------------- | -------- | --------- | --------- | ----------- |
+   | `test_err_1`   | Error    | Invalid   | Exception | REQ-1       |
+   | `test_edge_1`  | Edge     | Boundary  | Handled   | REQ-2       |
+   | `test_happy_1` | Happy    | Normal    | Success   | REQ-3       |
+   | `prop_inv_1`   | Property | Generated | Invariant | REQ-4       |
 
 ## Test Framework Matrix
 
-| Language | Unit Framework | Property Framework | Assertion Style |
-|----------|---------------|-------------------|-----------------|
-| Rust | `cargo test` | proptest | `assert!`, `assert_eq!` |
-| Python | pytest | hypothesis | `assert`, `pytest.raises` |
-| TypeScript | vitest | fast-check | `expect()`, `toThrow()` |
-| Go | `go test` | rapid | `t.Error`, `t.Fatal` |
-| Java | JUnit 5 | jqwik | `assertEquals`, `assertThrows` |
-| Kotlin | Kotest | built-in | `shouldBe`, `shouldThrow` |
-| C++ | GoogleTest | rapidcheck | `EXPECT_EQ`, `EXPECT_THROW` |
+| Language   | Unit Framework | Property Framework | Assertion Style                |
+| ---------- | -------------- | ------------------ | ------------------------------ |
+| Rust       | `cargo test`   | proptest           | `assert!`, `assert_eq!`        |
+| Python     | pytest         | hypothesis         | `assert`, `pytest.raises`      |
+| TypeScript | vitest         | fast-check         | `expect()`, `toThrow()`        |
+| Go         | `go test`      | rapid              | `t.Error`, `t.Fatal`           |
+| Java       | JUnit 5        | jqwik              | `assertEquals`, `assertThrows` |
+| Kotlin     | Kotest         | built-in           | `shouldBe`, `shouldThrow`      |
+| C++        | GoogleTest     | rapidcheck         | `EXPECT_EQ`, `EXPECT_THROW`    |
 
 ## Test Design Templates
 
 ### Error Case Test
+
 ```
 Test: test_[operation]_rejects_[invalid_condition]
 Given: [Invalid precondition state]
@@ -78,6 +79,7 @@ Requirement: [REQ-ID]
 ```
 
 ### Edge Case Test
+
 ```
 Test: test_[operation]_handles_[boundary]
 Given: [Boundary condition]
@@ -87,6 +89,7 @@ Requirement: [REQ-ID]
 ```
 
 ### Property Test
+
 ```
 Property: prop_[invariant_name]
 For all: [Generated inputs within constraints]
@@ -110,18 +113,21 @@ Requirement: [REQ-ID]
 ### Step 1: CREATE Test Files (RED State)
 
 **Priority Order from Plan:**
+
 1. Error cases (Priority 1)
 2. Edge cases (Priority 2)
 3. Happy paths (Priority 3)
 4. Property tests (Priority 4)
 
 **Python Example:**
+
 ```python
 # tests/test_account.py
 # From plan: Test designs
 
 import pytest
 from hypothesis import given, strategies as st
+
 
 class TestAccountFromPlan:
     """Tests designed in plan phase"""
@@ -161,11 +167,14 @@ class TestAccountFromPlan:
         assert result == 30
 
     # Property Tests (Priority 4)
-    @given(st.integers(min_value=0, max_value=10000),
-           st.integers(min_value=1, max_value=100))
+    @given(
+        st.integers(min_value=0, max_value=10000),
+        st.integers(min_value=1, max_value=100),
+    )
     def test_balance_never_negative(self, initial, amount):
         """From plan: PROP-1"""
         from hypothesis import assume
+
         assume(amount <= initial)
         account = Account(balance=initial)
         account.withdraw(amount)
@@ -186,9 +195,11 @@ echo "RED state achieved - tests fail as expected"
 ### Step 3: Achieve GREEN State
 
 **Implement minimal code to pass tests:**
+
 ```python
 # src/account.py
 # Minimal implementation to pass tests
+
 
 class Account:
     def __init__(self, balance: int):
@@ -225,39 +236,39 @@ echo "REFACTOR complete - tests still green"
 
 # TEST FRAMEWORK COMMANDS
 
-| Language | Run Tests | Watch Mode | Coverage |
-|----------|-----------|------------|----------|
-| Python | `pytest` | `pytest-watch` | `pytest --cov` |
-| Rust | `cargo test` | `cargo watch -x test` | `cargo tarpaulin` |
-| TypeScript | `vitest run` | `vitest --watch` | `vitest --coverage` |
-| Go | `go test ./...` | `gotestsum --watch` | `go test -cover` |
-| Java | `mvn test` | - | `mvn jacoco:report` |
-| Kotlin | `./gradlew test` | `./gradlew -t test` | `./gradlew jacocoTestReport` |
+| Language   | Run Tests        | Watch Mode            | Coverage                     |
+| ---------- | ---------------- | --------------------- | ---------------------------- |
+| Python     | `pytest`         | `pytest-watch`        | `pytest --cov`               |
+| Rust       | `cargo test`     | `cargo watch -x test` | `cargo tarpaulin`            |
+| TypeScript | `vitest run`     | `vitest --watch`      | `vitest --coverage`          |
+| Go         | `go test ./...`  | `gotestsum --watch`   | `go test -cover`             |
+| Java       | `mvn test`       | -                     | `mvn jacoco:report`          |
+| Kotlin     | `./gradlew test` | `./gradlew -t test`   | `./gradlew jacocoTestReport` |
 
 ---
 
 # VALIDATION GATES
 
-| Gate | Command | Pass Criteria | Blocking |
-|------|---------|---------------|----------|
-| Framework | Detect test framework | Found | Yes |
-| RED | Initial test run | Tests fail | Yes |
-| GREEN | Post-implementation | Tests pass | Yes |
-| REFACTOR | Post-cleanup | Tests still pass | Yes |
-| Coverage | Coverage report | >= 80% | No |
+| Gate      | Command               | Pass Criteria    | Blocking |
+| --------- | --------------------- | ---------------- | -------- |
+| Framework | Detect test framework | Found            | Yes      |
+| RED       | Initial test run      | Tests fail       | Yes      |
+| GREEN     | Post-implementation   | Tests pass       | Yes      |
+| REFACTOR  | Post-cleanup          | Tests still pass | Yes      |
+| Coverage  | Coverage report       | >= 80%           | No       |
 
 ---
 
 # EXIT CODES
 
-| Code | Meaning |
-|------|---------|
-| 0 | TDD cycle complete, all tests pass |
-| 11 | No test framework detected |
-| 12 | Test compilation failed |
-| 13 | Tests not failing (RED state not achieved) |
-| 14 | Tests fail after implementation (GREEN not achieved) |
-| 15 | Tests fail after refactor (regression) |
+| Code | Meaning                                              |
+| ---- | ---------------------------------------------------- |
+| 0    | TDD cycle complete, all tests pass                   |
+| 11   | No test framework detected                           |
+| 12   | Test compilation failed                              |
+| 13   | Tests not failing (RED state not achieved)           |
+| 14   | Tests fail after implementation (GREEN not achieved) |
+| 15   | Tests fail after refactor (regression)               |
 
 ---
 
@@ -289,7 +300,5 @@ echo "REFACTOR complete - tests still green"
    - Lines covered
    - Branch coverage
    - Uncovered areas
-
-
 
 $ARGUMENTS

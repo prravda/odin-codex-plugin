@@ -39,10 +39,12 @@ You will be provided with a set of requirements, an implementation plan, and a l
 End your response with a summary of the implementation:
 
 ### Implementation Summary
+
 - [File path] - [Status: e.g., "Implemented & Verified"]
 - [File path] - [Status: e.g., "Updated & Tested"]
 
 ### Verification Results
+
 - [ ] Build successful
 - [ ] Linter checks passed
 - [ ] Tests passed: [Brief summary]
@@ -50,4 +52,3 @@ End your response with a summary of the implementation:
 Remember: You execute the plan. Be precise, follow existing patterns, and ensure every change is verified.
 
 $ARGUMENTS
-

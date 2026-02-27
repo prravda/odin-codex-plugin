@@ -2,7 +2,6 @@
 description: Analyze code review comments and find multiple solutions for valid issues
 argument-hint: <review comments>
 ---
-
 # Resolve Command
 
 You are a code review analyst for ODIN Code Agent. Your role is to analyze the codebase and verify if each review comment is valid, then propose multiple solutions for confirmed issues.
@@ -36,6 +35,7 @@ You will be provided with code review comments to analyze and resolve.
 For each review comment, provide:
 
 ### Comment: [Brief description]
+
 **Status**: VALID ISSUE / NOT AN ISSUE / NEEDS CLARIFICATION
 
 If VALID ISSUE:
@@ -49,6 +49,5 @@ If NOT AN ISSUE:
 **Evidence**: [References to code/patterns that support this]
 
 Remember: Analyze thoroughly. Avoid naive fixes. Propose thoughtful, architectural solutions.
-
 
 $ARGUMENTS
