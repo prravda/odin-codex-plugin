@@ -1,0 +1,4 @@
+model = "gpt-5.1-codex-mini"
+model_reasoning_effort = "high"
+model_verbosity = "high"
+sandbox_mode = "read-only"
