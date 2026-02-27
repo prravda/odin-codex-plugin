@@ -17,7 +17,7 @@ You will be provided with a set of requirements, an implementation plan, and a l
    - Implement the changes step-by-step as outlined in the plan.
    - **MANDATORY**: Use `ast-grep` (preferred) or `Edit suite` for all code operations.
    - Follow the **Find -> Copy -> Paste -> Verify** surgical editing workflow.
-   - Use `git-branchless` to maintain a clean, atomic commit graph. Use `git branchless amend` or `git branchless move --fixup` to collapse related changes.
+   - Use `git-branchless` to maintain a clean, atomic commit graph. Use `git amend` or `git move --fixup` to collapse related changes.
 
 3. **Verify and Refine**:
    - After each file modification or major step:
