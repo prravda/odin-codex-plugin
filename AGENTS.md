@@ -56,12 +56,17 @@ Mandatory: 2+ concerns | 2+ dirs | Research+impl | 3+ files | Confidence <0.7
 **Tiers:** >=0.8 Act→Verify | 0.5-0.8 Preview→Transform | 0.3-0.5 Research→Plan→Test | <0.3 Decompose→Propose→Validate
 Calibration: Success +0.1 (cap 1.0), Failure -0.2 (floor 0.0). Default: research over action.
 
-**Scope (tokei-driven):** Micro (<500 LOC): Direct | Small (500-2K): Progressive | Medium (2K-10K): Multi-agent | Large (10K-50K): Research-first | Massive (>50K): Formal planning
-**Break vs Direct:** Break: >5 steps, deps, risk >20, complexity >6, confidence <0.6 | Direct: atomic, no deps, risk <10, confidence >0.8
+**Research vs. Act:** Research: unfamiliar code, unclear dependencies, high risk, confidence <0.5, multiple solutions | Act: familiar patterns, clear impact, low risk, confidence >0.7, single solution
+**Tool Selection Matrix:** ast-grep → code structure/refactoring/bulk transforms | srgn → grammar-scoped regex replacement | ripgrep → text/comments/strings/non-code | awk → column extraction/line ranges/text regex | tokei → scope assessment | Combined → multi-stage via fd/rg/xargs pipelines
+**Scope (tokei-driven):** Run `tokei <target> --output json | jq '.Total.code'` before editing. Micro (<500 LOC): Direct edit/single-file focus/minimal verification | Small (500-2K LOC): Progressive refinement/2-3 file scope/standard verification | Medium (2K-10K LOC): Multi-agent parallel/dependency mapping/staged rollout | Large (10K-50K LOC): Research-first/architecture review/incremental checkpoints | Massive (>50K LOC): Decompose to subsystems/formal planning/multi-phase execution
+**Break vs Direct:** Break: >5 steps, dependencies exist, risk >20, complexity >6, confidence <0.6 | Direct: atomic task, no dependencies, risk <10, complexity <3, confidence >0.8
 **Parallel vs Sequence:** Parallel: independent, no shared state, all params known | Sequence: dependent, shared state, need intermediate results
 
 **Ask (AskUserQuestion):** Multiple interpretations | Ambiguous scope | Trade-offs | Missing context | Confidence <0.5. Format: 2-4 concrete options. Skip: unambiguous, explicit constraints, trivial.
 **FORBIDDEN:** Assuming broader scope | "I'll do X unless..." | Over-asking trivial tasks
+**Accuracy Patterns:** 1) Critical Path Double-Check: Pre-verify → Execute → Mid-verify → Test → Post-verify → Spot-check | 2) Non-Critical First: Test files → Examples → Non-critical → Critical paths | 3) Incremental Expansion: 1 instance → 10% → 50% → 100% | 4) Assumption Validation: List → Validate critical → Challenge questionable → Act on validated
+**Quick Decision Reference:** String change → (0.9, Direct, Single verification) | Function rename 5 files → (0.6, Progressive 1→10%→100%, Three-stage) | Architecture refactor → (0.3, Research→Plan→Test, Extensive) | Unknown codebase → (0.2, Research→Propose, Seek guidance) | Bug understood → (0.8, Direct+test, Before/after) | Bug unclear → (0.4, Investigate→Test, Extensive) | Bulk transform → (0.7, Progressive, Batch verify) | Critical path → (0.6, Extra cautious, Double-check)
+**ADR Template:** Status: [Proposed|Accepted|Deprecated|Superseded] | Context: P(problem), C(constraints), O(objectives), R(requirements) | Decision: maximize sum(Oi*wi) subject to C | Consequences: Benefits, trade-offs, risks | Alternatives: Options considered/rejected
 </decisions>
 
 <git>
@@ -323,51 +328,6 @@ Calibration: Success +0.1 (cap 1.0), Failure -0.2 (floor 0.0). Default: research
 - **Principle of Least Surprise:** Code should behave as readers expect. Explicit over implicit. Clear naming, consistent conventions.
 - **Composition over Inheritance:** Prefer small, composable units. Traits/interfaces for polymorphism. Avoid deep inheritance hierarchies.
 </good_coding_paradigms>
-
-<decision_heuristics>
-**Research vs. Act:** Research: unfamiliar code, unclear dependencies, high risk, confidence <0.5, multiple solutions | Act: familiar patterns, clear impact, low risk, confidence >0.7, single solution
-
-**Tool Selection Matrix:**
-- ast-grep → code structure, refactoring, bulk transforms
-- srgn → grammar-scoped regex replacement
-- ripgrep → text/comments/strings, non-code
-- awk → column extraction, line ranges, text regex
-- tokei → scope assessment
-- Combined → multi-stage via fd/rg/xargs pipelines
-
-**Scope Assessment (tokei-driven):** Run `tokei <target> --output json | jq '.Total.code'` before editing to select strategy:
-- **Micro** (<500 LOC): Direct edit, single-file focus, minimal verification
-- **Small** (500-2K LOC): Progressive refinement, 2-3 file scope, standard verification
-- **Medium** (2K-10K LOC): Multi-agent parallel, dependency mapping required, staged rollout
-- **Large** (10K-50K LOC): Research-first, architecture review, incremental with checkpoints
-- **Massive** (>50K LOC): Decompose to subsystems, formal planning, multi-phase execution
-
-**Break Down vs. Direct:**
-- Break: >5 steps, dependencies exist, risk >20, complexity >6, confidence <0.6
-- Direct: atomic task, no dependencies, risk <10, complexity <3, confidence >0.8
-
-**Parallelize vs. Sequence:**
-- Parallel: independent ops, no shared state, order agnostic, all params known
-- Sequence: dependent ops, shared state, order matters, need intermediate results
-
-**Accuracy Patterns:**
-1) Critical Path Double-Check: Pre-verify → Execute → Mid-verify → Test → Post-verify → Spot-check
-2) Non-Critical First: Test files → Examples → Non-critical → Critical paths
-3) Incremental Expansion: 1 instance → 10% → 50% → 100%
-4) Assumption Validation: List → Validate critical → Challenge questionable → Act on validated
-
-**Quick Decision Reference:**
-- String change → (0.9, Direct, Single verification)
-- Function rename 5 files → (0.6, Progressive 1→10%→100%, Three-stage)
-- Architecture refactor → (0.3, Research→Plan→Test, Extensive)
-- Unknown codebase → (0.2, Research→Propose, Seek guidance)
-- Bug understood → (0.8, Direct+test, Before/after)
-- Bug unclear → (0.4, Investigate→Test, Extensive)
-- Bulk transform → (0.7, Progressive, Batch verify)
-- Critical path → (0.6, Extra cautious, Double-check)
-
-**ADR Template:** Status: [Proposed|Accepted|Deprecated|Superseded] | Context: P(problem), C(constraints), O(objectives), R(requirements) | Decision: maximize sum(Oi*wi) subject to C | Consequences: Benefits, trade-offs, risks | Alternatives: Options considered/rejected
-</decision_heuristics>
 
 <implementation_protocol>
 **Pre-implementation checklist (BLOCKED until complete):**
