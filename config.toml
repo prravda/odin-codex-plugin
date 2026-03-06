@@ -3,7 +3,7 @@ model_verbosity = "high"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 project_doc_fallback_filenames = ["CLAUDE.md"]
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 personality = "pragmatic"
 suppress_unstable_features_warning = true
 compact_prompt = """You are performing CONTEXT CHECKPOINT COMPACTION. Create a handoff summary another LLM can continue without losing intent.
@@ -38,12 +38,32 @@ Brief chronological analysis of the conversation, including major pivots and use
 9. Optional Next Step (must align with the latest explicit user request; quote the relevant latest line when applicable)
 </summary>"""
 
-[agents]
-# max_depth = 4
-# max_threads = 128
+[features]
+undo = true
+enable_request_compression = true
+apply_patch_freeform = true
+multi_agent = true
+collaboration_modes = true
+personality = true
 
+memories = true
+child_agents_md = true
+js_repl = true
+plugins = true
+
+responses_websockets = true
+responses_websockets_v2 = true
+prevent_idle_sleep = true
+
+fast_mode = true
+artifact = true
+
+[agents]
 max_depth = 2
-max_threads = 24
+max_threads = 96
+job_max_runtime_seconds = 36000  # Default: 1800 seconds
+# max_depth = 1
+# max_threads = 24
 
 [agents.plan]
 description = "Architecture and implementation planner. USE FOR: execution plans, dependency sequencing, risk and rollback strategy. NOT FOR: direct code edits or fast lookups. Produces actionable, file-scoped steps and verification guidance."
@@ -96,17 +116,6 @@ config_file = "agents/advocate.toml"
 [analytics]
 enabled = false
 
-[features]
-undo = true
-apply_patch_freeform = true
-steer = true
-multi_agent = true
-collaboration_modes = true
-personality = true
-memories = true
-child_agents_md = true
-js_repl = true
-
 [sandbox_workspace_write]
 network_access = true
 writable_roots = ["/tmp"]
@@ -135,24 +144,29 @@ CONTEXT7_API_KEY = "ctx7sk-7d9ad015-a1c2-43a0-b671-d1870dc68561"
 
 [mcp_servers.sequentialthinking-tools]
 command = "npx"
-args = ["-y", "mcp-sequentialthinking-tools"]
+args = ["-y", "mcp-sequentialthinking-tools@latest"]
+startup_timeout_sec = 20
 
 [mcp_servers.actor-critic-thinking]
 command = "npx"
-args = ["-y", "mcp-server-actor-critic-thinking"]
+args = ["-y", "mcp-server-actor-critic-thinking@latest"]
+startup_timeout_sec = 20
 
 [mcp_servers.shannon-thinking]
 command = "npx"
 args = ["-y", "server-shannon-thinking@latest"]
+startup_timeout_sec = 20
 
 [mcp_servers.time]
 command = "uvx"
-args = ["mcp-server-time"]
+args = ["mcp-server-time@latest"]
+startup_timeout_sec = 20
 
 [mcp_servers.repomix]
 command = "npx"
-args = ["-y", "repomix", "--mcp"]
+args = ["-y", "repomix@latest", "--mcp"]
+startup_timeout_sec = 20
+# [End] MCP Servers
 
 [notice]
 hide_rate_limit_model_nudge = true
-# [End] MCP Servers

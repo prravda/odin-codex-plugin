@@ -24,5 +24,4 @@ Before proceeding to ask planning questions, you must *proactively and criticall
 Only after completing *both* critical VS and exploration steps, proceed to use the question tool to ask the *maximum possible number* of precise, clarifying, and challenging planning questions that holistically address the problem space, taking into account uncertainty, gaps, and ambiguous requirements.
 
 
-
 $ARGUMENTS

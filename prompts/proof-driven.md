@@ -145,7 +145,7 @@ command -v lean >/dev/null || exit 11
 lake build || exit 13
 
 # Check for incomplete proofs
-SORRY_COUNT=$(rg '\bsorry\b' --type-add 'lean:*.lean' -t lean -c 2>/dev/null | awk -F: '{sum+=$2} END {print sum+0}')
+SORRY_COUNT=$(rg 'sorry' --type-add 'lean:*.lean' -t lean -c 2>/dev/null | awk -F: '{sum+=$2} END {print sum+0}')
 echo "Sorry count: $SORRY_COUNT"
 ```
 
@@ -176,7 +176,7 @@ while [ "$SORRY_COUNT" -gt 0 ]; do
   # Complete proofs using tactics
   # Rebuild and recount
   lake build || exit 13
-  SORRY_COUNT=$(rg '\bsorry\b' -t lean -c 2>/dev/null | awk -F: '{sum+=$2} END {print sum+0}')
+  SORRY_COUNT=$(rg 'sorry' -t lean -c 2>/dev/null | awk -F: '{sum+=$2} END {print sum+0}')
 done
 ```
 
@@ -203,7 +203,7 @@ done
 | ----------- | ----------------- | ------------- | ---------- |
 | Toolchain   | `command -v lake` | Found         | Yes        |
 | Build       | `lake build`      | Success       | Yes        |
-| Sorry Count | `rg '\bsorry\b'`  | Zero          | Yes        |
+| Sorry Count | `rg 'sorry'`  | Zero          | Yes        |
 | Tests       | `lake test`       | All pass      | If present |
 
 ---
@@ -248,5 +248,6 @@ done
    - Main theorems proved
    - Supporting lemmas
    - Tactics used
+
 
 $ARGUMENTS
