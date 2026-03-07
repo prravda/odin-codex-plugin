@@ -49,14 +49,17 @@ personality = true
 memories = true
 child_agents_md = true
 js_repl = true
-plugins = true
+# plugins = true
 
 responses_websockets = true
 responses_websockets_v2 = true
 prevent_idle_sleep = true
 
-fast_mode = true
+# fast_mode = true
 artifact = true
+
+# Question Tool On Default Mode Too
+# default_mode_request_user_input = true
 
 [agents]
 max_depth = 2
@@ -76,9 +79,13 @@ config_file = "agents/explore.toml"
 description = "External research specialist. USE FOR: library patterns, upstream APIs, and version-specific behavior analysis. NOT FOR: local code edits. Provides sourced references and applicability notes for implementation."
 config_file = "agents/librarian.toml"
 
-[agents.code-fast]
-description = "Rapid code authoring agent. USE FOR: scaffolding, boilerplate, and quick feature implementation. NOT FOR: debugging or analysis (use fast) or hardening passes."
-config_file = "agents/code-fast.toml"
+# [agents.code-fast]
+# description = "Rapid code authoring agent. USE FOR: scaffolding, boilerplate, and quick feature implementation. NOT FOR: debugging or analysis (use fast) or hardening passes."
+# config_file = "agents/code-fast.toml"
+
+[agents.code-small]
+description = "Small-scope code authoring agent. USE FOR: tightly scoped implementation tasks, concise targeted fixes, and low-blast-radius edits. NOT FOR: debugging or analysis-only tasks (use fast or general), scaffolding-heavy speed runs (use code-fast), or broader production changes (use code)."
+config_file = "agents/code-small.toml"
 
 [agents.code]
 description = "Default code authoring agent. USE FOR: writing new features, implementing changes, production-oriented code. NOT FOR: debugging analysis (use general) or adversarial review."
@@ -88,9 +95,9 @@ config_file = "agents/code.toml"
 description = "High-fidelity code authoring agent. USE FOR: complex critical-path implementations requiring exhaustive correctness. NOT FOR: reasoning-only analysis (use deep) or quick prototypes."
 config_file = "agents/code-deep.toml"
 
-[agents.fast]
-description = "Fast general-purpose agent for quick analysis and fixes. USE FOR: rapid debugging, triage, small mixed-concern patches. NOT FOR: dedicated feature implementation (use code-fast) or deep reasoning."
-config_file = "agents/fast.toml"
+# [agents.fast]
+# description = "Fast general-purpose agent for quick analysis and fixes. USE FOR: rapid debugging, triage, small mixed-concern patches. NOT FOR: dedicated feature implementation (use code-fast) or deep reasoning."
+# config_file = "agents/fast.toml"
 
 [agents.awaiter]
 config_file = "agents/awaiter.toml"
