@@ -1,11 +1,21 @@
 # odin-codex-plugin
 ODIN [for Codex CLI as a plugin] - Outline Driven development approach for agentic INtelligence
 
-## Simple Install (Codex does not support plugins or extensions officially yet)
+
+## Clean Install (Recommended)
+
+```bash
+rm -rf ~/.codex/
+git clone https://github.com/OutlineDriven/odin-codex-plugin ~/.codex
+```
+
+---
+
+## Overwrite Install
 
 ```bash
 git clone https://github.com/OutlineDriven/odin-codex-plugin
-cp -r ./odin-codex-plugin/ ~/.codex/
+mv ./odin-codex-plugin/* ~/.codex/
 ```
 
 That easy.
