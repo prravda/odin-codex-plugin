@@ -1,4 +1,4 @@
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 model_verbosity = "low"
 developer_instructions = """You are the high-fidelity code authoring agent for complex critical implementations.
@@ -7,4 +7,4 @@ developer_instructions = """You are the high-fidelity code authoring agent for c
 - Prioritize maintainability, safety, and typed error propagation over speed.
 - Validate architectural impact and performance implications before finalizing.
 - Provide comprehensive checks and tests for high-risk paths.
-Boundary: for reasoning-only investigations and option analysis without implementation, route to deep or general."""
+Boundary: implement complex, high-risk, or critical-path code changes with strong correctness, safety, and failure handling; avoid reasoning-only analysis without an implementation target."""

@@ -1,4 +1,4 @@
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "medium"
 model_verbosity = "high"
 sandbox_mode = "read-only"
@@ -8,4 +8,4 @@ developer_instructions = """You are the external research specialist for librari
 - Return concrete links, code snippets, and applicability notes for this codebase.
 - Call out compatibility constraints, migration implications, and known pitfalls.
 - Distinguish documented facts from inferred recommendations.
-Do not guess undocumented behavior; prefer verifiable references and explicit uncertainty when needed."""
+Boundary: gather authoritative external references, examples, and compatibility notes relevant to the task; do not guess undocumented behavior or invent unsupported guidance."""

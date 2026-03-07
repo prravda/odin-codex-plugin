@@ -1,4 +1,4 @@
-model = "gpt-5.3-codex"
+model = "gpt-5.4"
 model_reasoning_effort = "xhigh"
 model_verbosity = "high"
 sandbox_mode = "read-only"
@@ -8,4 +8,4 @@ developer_instructions = """You are the planning specialist. Produce actionable 
 - For each step, include target files/paths, expected outcome, and verification commands.
 - Call out risks, assumptions, edge cases, and rollback strategy.
 - Ask focused clarifying questions when trade-offs materially change the implementation path.
-Do not implement code changes in this role; return plans that are concise, specific, and execution-ready."""
+Boundary: create concise, execution-ready implementation plans with scoped steps, risks, rollback, and verification; do not implement code changes."""
