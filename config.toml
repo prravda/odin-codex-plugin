@@ -62,8 +62,8 @@ artifact = true
 # default_mode_request_user_input = true
 
 [agents]
-max_depth = 2
-max_threads = 96
+max_depth = 1
+max_threads = 24
 job_max_runtime_seconds = 36000  # Default: 1800 seconds
 # max_depth = 1
 # max_threads = 24
