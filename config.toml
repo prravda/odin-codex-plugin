@@ -1,9 +1,11 @@
 model_reasoning_effort = "high"
-model_verbosity = "high"
+model_verbosity = "low"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 project_doc_fallback_filenames = ["CLAUDE.md"]
 model = "gpt-5.4"
+model_context_window = 1000000  # Use 1M Context Window
+model_auto_compact_token_limit = 950000  # Use 950K Auto Compact Token Limit
 personality = "pragmatic"
 suppress_unstable_features_warning = true
 compact_prompt = """You are performing CONTEXT CHECKPOINT COMPACTION. Create a handoff summary another LLM can continue without losing intent.
@@ -48,25 +50,27 @@ personality = true
 
 memories = true
 child_agents_md = true
-js_repl = true
+# js_repl = true
+# runtime_metrics = true
 # plugins = true
 
 responses_websockets = true
 responses_websockets_v2 = true
 prevent_idle_sleep = true
-
-# fast_mode = true
 artifact = true
 
 # Question Tool On Default Mode Too
 # default_mode_request_user_input = true
 
+guardian_approval = true
+
 [agents]
 max_depth = 1
-max_threads = 24
-job_max_runtime_seconds = 36000  # Default: 1800 seconds
-# max_depth = 1
-# max_threads = 24
+max_threads = 32
+# max_depth = 2
+# max_threads = 64
+
+job_max_runtime_seconds = 96000  # Default: 1800 seconds
 
 [agents.plan]
 description = "Architecture and implementation planner. USE FOR: execution plans, dependency sequencing, risk and rollback strategy. NOT FOR: direct code edits or fast lookups. Produces actionable, file-scoped steps and verification guidance."
