@@ -52,7 +52,7 @@ askme
 > Basically, this project already turned on efficient features  of codex, somethings are experimental state but battle-tasted, in .codex/config.toml. This section is going to tell about the decisions.
 > 
 
-### [config.toml](https://www.notion.so/prravda/config.toml)
+### [config.toml](./config.toml)
 
 ```toml
 model_reasoning_effort = "high"
@@ -81,7 +81,7 @@ job_max_runtime_seconds = 36000  # Default: 1800 seconds
 - codex could call agent(s) in recursively, by following max_depth.
     - But if host machine or your quota is limited, set these values including max_depth appropriately as you want.
 
-### [agents](https://www.notion.so/prravda/agents/)
+### [agents](./agents/)
 
 ```toml
 model = "gpt-5.3-codex-spark"
