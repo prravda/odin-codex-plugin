@@ -119,7 +119,18 @@ Calibration: Success +0.1 (cap 1.0), Failure -0.2 (floor 0.0). Default: research
 
 **Doc retrieval:** context7, ref-tool, github-grep, parallel, fetch. Follow internal links (depth 2-3). Priority: 1) Official docs 2) API refs 3) Books/papers 4) Tutorials 5) Community
 
-**Banned [HARD—REJECT]:** `ls`→`eza` | `find`→`fd` | `grep`→`rg`/`ast-grep` | `cat`→`bat -P -p -n --color=always` | `ps`→`procs` | `diff`→`difft` | `time`→`hyperfine` | `sed`→`srgn`/`ast-grep -U` | `rm`→`rip`
+**Banned [HARD—REJECT]:** `ls`→`eza` | `find`→`fd` | `grep`→`rg`/`ast-grep` | `cat`→`bat -P -p -n` | `ps`→`procs` | `diff`→`difft` | `time`→`hyperfine` | `sed`→`srgn`/`ast-grep -U` | `rm`→`rip`
+
+### Token-Efficient CLI Output
+Minimize output tokens at the command layer. ANSI colors waste 15-25% of tokens.
+
+- **Prefer** `--json`/`--plain` over decorated text when parsing output
+- **Cap output**: `| head -n 50` default for unbounded commands
+- **Discovery pattern**: `rg -l` / `fd --max-results N` → then targeted `bat -r` / `Read -offset -limit`
+- **Counting**: `rg -c` / `git grep -c` when only totals needed
+- **Existence**: `rg -q` / `fd -q` for exit-code-only checks
+- Per-tool: `bat -r START:END` (range), `rg --no-heading --max-count N`, `fd -1` (first match), `eza -1` (names only), `tokei --output json | jql`
+
 **Preferences:** Context args: `ast-grep -C`, `rg -C`, `bat -r`, `Read -offset/-limit`
 **Headless [MANDATORY]:** No TUIs (top/htop/vim/nano). No pagers (pipe to cat or `--no-pager`). Prefer `--json`/plain text. Stdin-waiting = CRITICAL FAILURE.
 **fd-First [MANDATORY]:** Before ast-grep/rg/multi-file edits: `fd -e <ext>` discover → `fd -E` exclude noise → validate count (<50) → execute scoped.
@@ -160,7 +171,7 @@ Calibration: Success +0.1 (cap 1.0), Failure -0.2 (floor 0.0). Default: research
 
 ### Core System & File Ops
 - **`eza`**: `eza --tree --level=2` | `eza -l --git` | `eza -l --sort=size`
-- **`bat`**: `bat -P -p -n --color=always` (default). Flags: `-l` (lang), `-A` (show-all), `-r` (range), `-d` (diff), `-n` (line numbers)
+- **`bat`**: `bat -P -p -n` (default). Flags: `-l` (lang), `-A` (show-all), `-r` (range), `-d` (diff), `-n` (line numbers)
 - **`zoxide`**: `z foo` | `zi foo` (fzf) | `zoxide query|add|remove`
 - **`rargs`**: `rargs -p '(.*)\.txt' mv {0} {1}.bak`
 
