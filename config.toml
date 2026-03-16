@@ -1,5 +1,5 @@
 model_reasoning_effort = "high"
-model_verbosity = "high"
+model_verbosity = "low"
 approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 project_doc_fallback_filenames = ["CLAUDE.md"]
@@ -39,6 +39,7 @@ Brief chronological analysis of the conversation, including major pivots and use
 8. Current Work
 9. Optional Next Step (must align with the latest explicit user request; quote the relevant latest line when applicable)
 </summary>"""
+approvals_reviewer = "guardian_subagent"
 
 [features]
 undo = true
@@ -63,6 +64,7 @@ artifact = true
 # default_mode_request_user_input = true
 
 guardian_approval = true
+tool_suggest = true
 
 [agents]
 max_depth = 1
@@ -75,9 +77,6 @@ job_max_runtime_seconds = 96000  # Default: 1800 seconds
 [agents.plan]
 description = "Architecture and implementation planner. USE FOR: execution plans, dependency sequencing, risk and rollback strategy. NOT FOR: direct code edits or fast lookups. Produces actionable, file-scoped steps and verification guidance."
 config_file = "agents/plan.toml"
-
-[agents.explorer]
-config_file = "agents/explore.toml"
 
 [agents.librarian]
 description = "External research specialist. USE FOR: library patterns, upstream APIs, and version-specific behavior analysis. NOT FOR: local code edits. Provides sourced references and applicability notes for implementation."
@@ -102,15 +101,6 @@ config_file = "agents/code-deep.toml"
 # [agents.fast]
 # description = "Fast general-purpose agent for quick analysis and fixes. USE FOR: rapid debugging, triage, small mixed-concern patches. NOT FOR: dedicated feature implementation (use code-fast) or deep reasoning."
 # config_file = "agents/fast.toml"
-
-[agents.awaiter]
-config_file = "agents/awaiter.toml"
-
-[agents.default]
-config_file = "agents/general.toml"
-
-[agents.worker]
-config_file = "agents/general.toml"
 
 [agents.deep]
 description = "Deep reasoning agent for complex analysis. USE FOR: multi-file debugging, intricate refactoring logic, high-risk technical decisions. NOT FOR: straightforward code authoring (use code-deep) or trivial edits."
@@ -178,6 +168,3 @@ command = "npx"
 args = ["-y", "repomix@latest", "--mcp"]
 startup_timeout_sec = 20
 # [End] MCP Servers
-
-[notice]
-hide_rate_limit_model_nudge = true
